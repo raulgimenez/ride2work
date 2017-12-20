@@ -121,7 +121,7 @@ app.get('/ifttt/uab', function (req, res) {
             }
 
 		var options = {
-			uri: 'https://maker.ifttt.com/trigger/ride2work/with/key/cLf6X38C9GcNxUuOUSM7wJ',
+			uri: 'https://maker.ifttt.com/trigger/ride2work/with/key/_cgWjtrK7yr0StYy_Et3X',
 			  method: 'POST',
 			  json: { "value1" : resp[0], "value2" : resp[1], "value3" : resp[2] } 
 		}
