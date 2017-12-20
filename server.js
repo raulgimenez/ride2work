@@ -96,6 +96,50 @@ app.get('/cdi', function (req, res){
     });
 });
 
+app.get('/ifttt/uab', function (req, res) {
+
+    var options_uab = {
+	    url: 'https://www.waze.com/row-RoutingManager/routingRequest?from=x%3A2.28795+y%3A41.59321000000001&to=x%3A2.1025104+y%3A41.5028528&at=0&returnJSON=true&returnGeometries=true&returnInstructions=true&timeout=60000&nPaths=3&clientVersion=4.0.0&options=AVOID_TRAILS%3At%2CALLOW_UTURNS%3At',
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36',
+            'Referer': 'https://www.waze.com/es/livemap'
+        }
+    };
+
+    request(options_uab, function (error, response, body){
+
+        var resp = [];
+
+        if (!error && response.statusCode == 200) {
+            var info = JSON.parse(body);
+
+            for (var route in info.alternatives) {
+                var _name = info.alternatives[route].response.routeName;
+               var _time = Math.trunc(info.alternatives[route].response.totalRouteTime / 60);
+                var _type = info.alternatives[route].response.routeType[0];
+                resp[route] = _name + ": " +  _time + " min";
+            }
+
+		var options = {
+			uri: 'https://maker.ifttt.com/trigger/ride2work/with/key/cLf6X38C9GcNxUuOUSM7wJ',
+			  method: 'POST',
+			  json: { "value1" : resp[0], "value2" : resp[1], "value3" : resp[2] } 
+		}
+
+		console.log(resp);
+
+		request(options, function (error, response, body) {
+		  if (!error && response.statusCode == 200) {
+			  res.status(200).send("ok");
+		  }
+		});
+	};
+	
+    });
+
+
+
+});
 app.get('/uab', function (req, res) {
 
     var options_uab = {
